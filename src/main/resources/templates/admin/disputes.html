@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Disputes — Admin</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="admin-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content"><div class="section-line"><span>THE ADMINISTRATION DESK</span><span>REVIEW / RESOLVE / KEEP RECORD</span></div>
+
+<nav class="admin-nav" aria-label="Administration"><a th:href="@{/admin/dashboard}">Overview</a><a th:href="@{/admin/users}">Users</a><a th:href="@{/admin/listings}">Listings</a><a th:href="@{/admin/transactions}">Transactions</a><a th:href="@{/admin/disputes}">Disputes</a></nav><h1>Disputes</h1>
+
+<div th:if="${message}"><b th:text="${message}"></b></div>
+<div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
+
+<p th:if="${#lists.isEmpty(disputes)}">No disputes on record.</p>
+
+<div class="table-scroll" tabindex="0" aria-label="Scrollable records"><table th:unless="${#lists.isEmpty(disputes)}" >
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Item</th>
+      <th>Reporter</th>
+      <th>Reason</th>
+      <th>Status</th>
+      <th>Filed</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr th:each="d : ${disputes}">
+    <td th:text="${d.disputeId}"></td>
+    <td th:text="${d.listingTitle}"></td>
+    <td th:text="${d.reporterUsername}"></td>
+    <td th:text="${#strings.abbreviate(d.reason, 45)}"></td>
+    <td><span class="status-stamp" th:attr="data-status=${d.status}" th:text="${d.status == 'MEETUP_ARRANGED' ? 'Meetup confirmed' : #strings.capitalizeWords(#strings.toLowerCase(#strings.replace(d.status, '_', ' ')))}"></span></td>
+    <td th:text="${#temporals.format(d.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+    <td><a th:href="@{/admin/disputes/{id}(id=${d.disputeId})}">Review</a></td>
+  </tr>
+  </tbody>
+</table></div>
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

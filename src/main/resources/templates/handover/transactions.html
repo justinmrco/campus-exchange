@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>My Transactions — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="records-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content" data-live="user" th:attr="data-revision=${eventRevision}"><div class="section-line"><span>THE EXCHANGE REGISTER</span><span>YOUR COMMUNITY / YOUR RECORDS</span></div>
+
+<h1>My Transactions</h1>
+
+<div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
+<p th:if="${#lists.isEmpty(ledgers)}">No transactions yet. <a th:href="@{/marketplace}">Browse the marketplace</a></p>
+
+<div class="table-scroll member-records" tabindex="0" aria-label="Scrollable records"><table role="table" th:unless="${#lists.isEmpty(ledgers)}" >
+  <thead role="rowgroup">
+    <tr role="row">
+      <th role="columnheader" scope="col">#</th>
+      <th role="columnheader" scope="col">Item</th>
+      <th role="columnheader" scope="col">Buyer</th>
+      <th role="columnheader" scope="col">Seller</th>
+      <th role="columnheader" scope="col">State</th>
+      <th role="columnheader" scope="col">Updated</th>
+      <th role="columnheader" scope="col"></th>
+    </tr>
+  </thead>
+  <tbody role="rowgroup">
+  <tr role="row" th:each="ledger : ${ledgers}">
+    <td role="cell" data-label="Reference" th:text="${ledger.ledgerId}"></td>
+    <td role="cell" data-label="Item" th:text="${ledger.listingTitle}"></td>
+    <td role="cell" data-label="Buyer" th:text="${ledger.buyerUsername}"></td>
+    <td role="cell" data-label="Seller" th:text="${ledger.sellerUsername}"></td>
+    <td role="cell" data-label="Status"><span class="status-stamp" th:attr="data-status=${ledger.transactionState}" th:text="${ledger.transactionState == 'MEETUP_ARRANGED' ? 'Meetup confirmed' : #strings.capitalizeWords(#strings.toLowerCase(#strings.replace(ledger.transactionState, '_', ' ')))}"></span></td>
+    <td role="cell" data-label="Updated" th:text="${#temporals.format(ledger.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+    <td role="cell" data-label="Action"><a th:href="@{/handover/ledger/{id}(id=${ledger.ledgerId})}">View</a></td>
+  </tr>
+  </tbody>
+</table></div>
+
+
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

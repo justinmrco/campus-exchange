@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Transaction — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="receipt-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content" data-live="ledger" th:attr="data-ledger=${ledger.ledgerId},data-version=${ledger.version},data-state=${ledger.transactionState}"><div class="section-line"><span>THE HANDOVER RECEIPT</span><span th:text="${'EXCHANGE / ' + ledger.ledgerId}"></span></div>
+
+<p><a th:href="@{/handover/transactions}">← My Transactions</a></p>
+
+<!-- Flash messages -->
+<div th:if="${message == 'COMPLETED'}">
+  <h3>Transaction Complete!</h3>
+  <p>Both parties verified the handover. The item has been successfully exchanged.</p>
+  <a th:href="@{/handover/transactions}">Back to Transactions</a>
+</div>
+<div th:if="${message == 'WAITING'}">
+  <b>Your code was accepted.</b>
+  Waiting for <span th:text="${otherUsername}"></span> to submit their code.
+  This page will show an update notice when they verify.
+</div>
+<div th:if="${message != null and message != 'COMPLETED' and message != 'WAITING'}">
+  <b th:text="${message}"></b>
+</div>
+<div role="alert" th:if="${error}">
+  <b>Error:</b> <span th:text="${error}"></span>
+  <p th:if="${ledger.transactionState == 'MEETUP_ARRANGED' or ledger.transactionState == 'VERIFYING'}">
+    Tips: You must type THEIR code — not your own. Read it from the other person's screen.
+    Codes are not case-sensitive. Still failing?
+    <a th:href="@{/dispute/file/{id}(id=${ledger.ledgerId})}">File a dispute for admin help</a>
+  </p>
+</div>
+
+<h1 th:text="${ledger.listingTitle}"></h1>
+<p>
+  Transaction #<span th:text="${ledger.ledgerId}"></span> &nbsp;|&nbsp;
+  Buyer: <b th:text="${ledger.buyerUsername}"></b> &nbsp;|&nbsp;
+  Seller: <b th:text="${ledger.sellerUsername}"></b>
+</p>
+
+<hr>
+
+<!-- State machine progress -->
+<h3>Progress</h3><p class="muted">All times shown in Asia/Shanghai.</p>
+<div th:if="${ledger.transactionState != 'CANCELLED'}">
+  <p class="progress-interruption" th:if="${ledger.transactionState == 'DISPUTED'}" th:text="${dispute != null and dispute.status == 'RESOLVED' ? 'Exchange closed after review. The listing was withdrawn.' : 'Exchange paused for administrator review.'}"></p>
+<ol class="timeline" th:unless="${ledger.transactionState == 'DISPUTED'}" th:with="step=${ledger.transactionState == 'RESERVED' ? 0 : ledger.transactionState == 'MEETUP_PROPOSED' ? 1 : ledger.transactionState == 'MEETUP_ARRANGED' ? 2 : ledger.transactionState == 'VERIFYING' ? 3 : 4}">
+    <li th:classappend="${step > 0 or step == 4 ? 'is-complete' : step == 0 ? 'is-current' : 'is-upcoming'}" th:attr="aria-current=${step == 0 ? 'step' : null}"><b>Reserved</b> — <span th:text="${#temporals.format(ledger.createdAt, 'yyyy-MM-dd HH:mm')}"></span></li>
+    <li th:classappend="${step > 1 or step == 4 ? 'is-complete' : step == 1 ? 'is-current' : 'is-upcoming'}" th:attr="aria-current=${step == 1 ? 'step' : null}">
+      <b>Meetup Proposed</b>
+      <span th:if="${ledger.meetupLocation != null}"> — <span th:text="${ledger.meetupLocation}"></span></span>
+      <span th:if="${ledger.meetupLocation == null}"> — not yet proposed</span>
+    </li>
+    <li th:classappend="${step > 2 or step == 4 ? 'is-complete' : step == 2 ? 'is-current' : 'is-upcoming'}" th:attr="aria-current=${step == 2 ? 'step' : null}">
+      <b>Meetup Confirmed</b>
+      <span th:if="${ledger.meetupTime != null and (ledger.transactionState == 'MEETUP_ARRANGED' or ledger.transactionState == 'VERIFYING' or ledger.transactionState == 'COMPLETED')}">
+        — <span th:text="${#temporals.format(ledger.meetupTime, 'yyyy-MM-dd HH:mm')}"></span>
+      </span>
+    </li>
+    <li th:classappend="${step > 3 or step == 4 ? 'is-complete' : step == 3 ? 'is-current' : 'is-upcoming'}" th:attr="aria-current=${step == 3 ? 'step' : null}"><b>Token Verification</b></li>
+    <li th:classappend="${step > 4 or step == 4 ? 'is-complete' : step == 4 ? 'is-current' : 'is-upcoming'}" th:attr="aria-current=${step == 4 ? 'step' : null}"><b>Completed</b></li>
+  </ol>
+</div>
+<p class="receipt-status"><span class="status-stamp" data-status-stamp th:attr="data-status=${ledger.transactionState}" th:text="${ledger.transactionState == 'MEETUP_ARRANGED' ? 'Meetup confirmed' : #strings.capitalizeWords(#strings.toLowerCase(#strings.replace(ledger.transactionState, '_', ' ')))}"></span></p>
+
+<hr>
+
+<section class="receipt-actions" th:if="${participant}">
+<!-- Action: RESERVED — propose meetup -->
+<div th:if="${ledger.transactionState == 'RESERVED'}">
+  <h3>Step 1 — Propose a Campus Meetup</h3>
+  <p>Either party can propose a meetup location and time. The other side can Accept or Counter-propose.</p>
+  <form method="post" th:action="@{/handover/propose/{id}(id=${ledger.ledgerId})}"><input type="hidden" name="_csrf" th:value="${csrf}"><input type="hidden" name="version" th:value="${ledger.version}">
+    <p><label>Location:<br><input type="text" name="location" maxlength="200" th:value="${draft != null ? draft.location : ''}" required size="50" placeholder="e.g. Library main entrance"></label></p>
+    <p><label>Date &amp; Time (Asia/Shanghai):<br><input type="datetime-local" name="meetupTime" th:value="${draft != null ? draft.meetupTime : ''}" required></label></p>
+    <p><button type="submit" data-pending="Sending proposal…">Propose Meetup</button></p>
+  </form>
+  <hr>
+  <form method="post" th:action="@{/handover/cancel/{id}(id=${ledger.ledgerId})}"
+        data-confirm="Cancel this reservation? The listing will be made available again."><input type="hidden" name="_csrf" th:value="${csrf}">
+    <button class="quiet cancel-action" type="submit" data-pending="Cancelling…">Cancel Reservation</button>
+  </form>
+</div>
+
+<!-- Action: MEETUP_PROPOSED — you proposed (waiting) -->
+<div th:if="${ledger.transactionState == 'MEETUP_PROPOSED' and ledger.proposedBy == loginUser.userId}">
+  <h3>Your Proposal</h3>
+  <p>
+    Location: <b th:text="${ledger.meetupLocation}"></b><br>
+    Time: <span th:if="${ledger.meetupTime != null}" th:text="${#temporals.format(ledger.meetupTime, 'yyyy-MM-dd HH:mm')}"></span>
+  </p>
+  <p>Waiting for <b th:text="${otherUsername}"></b> to accept or counter-propose.</p>
+  <h4>Update your proposal:</h4>
+  <form method="post" th:action="@{/handover/propose/{id}(id=${ledger.ledgerId})}"><input type="hidden" name="_csrf" th:value="${csrf}"><input type="hidden" name="version" th:value="${ledger.version}">
+    <p><label>Location:<br><input type="text" name="location" maxlength="200" required size="50" th:value="${ledger.meetupLocation}"></label></p>
+    <p><label>Date &amp; Time (Asia/Shanghai):<br>
+      <input type="datetime-local" name="meetupTime" required
+             th:value="${ledger.meetupTime != null} ? ${#temporals.format(ledger.meetupTime, 'yyyy-MM-dd''T''HH:mm')} : ''">
+    </label></p>
+    <p><button type="submit" data-pending="Updating proposal…">Update Proposal</button></p>
+  </form>
+  <hr>
+  <form method="post" th:action="@{/handover/cancel/{id}(id=${ledger.ledgerId})}"
+        data-confirm="Cancel this reservation? The listing will be made available again."><input type="hidden" name="_csrf" th:value="${csrf}">
+    <button class="quiet cancel-action" type="submit" data-pending="Cancelling…">Cancel Reservation</button>
+  </form>
+</div>
+
+<!-- Action: MEETUP_PROPOSED — they proposed (respond) -->
+<div th:if="${ledger.transactionState == 'MEETUP_PROPOSED' and (ledger.proposedBy == null or ledger.proposedBy != loginUser.userId)}">
+  <h3><span th:text="${otherUsername}"></span>'s Meetup Proposal</h3>
+  <p>
+    Location: <b th:text="${ledger.meetupLocation}"></b><br>
+    Time: <span th:if="${ledger.meetupTime != null}" th:text="${#temporals.format(ledger.meetupTime, 'yyyy-MM-dd HH:mm')}"></span>
+  </p>
+  <form method="post" th:action="@{/handover/accept/{id}(id=${ledger.ledgerId})}"><input type="hidden" name="_csrf" th:value="${csrf}"><input type="hidden" name="version" th:value="${ledger.version}">
+    <button type="submit" data-pending="Confirming…">Accept This Proposal</button>
+  </form>
+
+  <h4>Counter-Propose:</h4>
+  <p>Suggest a different location or time.</p>
+  <form method="post" th:action="@{/handover/propose/{id}(id=${ledger.ledgerId})}"><input type="hidden" name="_csrf" th:value="${csrf}"><input type="hidden" name="version" th:value="${ledger.version}">
+    <p><label>Location:<br><input type="text" name="location" maxlength="200" required size="50" placeholder="e.g. Cafeteria Block B"></label></p>
+    <p><label>Date &amp; Time (Asia/Shanghai):<br><input type="datetime-local" name="meetupTime" th:value="${draft != null ? draft.meetupTime : ''}" required></label></p>
+    <p><button type="submit" data-pending="Sending proposal…">Send Counter-Proposal</button></p>
+  </form>
+</div>
+
+<form th:if="${ledger.transactionState == 'MEETUP_PROPOSED' and ledger.proposedBy != loginUser.userId}" method="post" th:action="@{/handover/cancel/{id}(id=${ledger.ledgerId})}" data-confirm="Cancel this reservation?"><input type="hidden" name="_csrf" th:value="${csrf}"><button class="quiet cancel-action" type="submit" data-pending="Cancelling…">Cancel reservation</button></form>
+<!-- Action: MEETUP_ARRANGED or VERIFYING — verification -->
+<div th:if="${ledger.transactionState == 'MEETUP_ARRANGED' or ledger.transactionState == 'VERIFYING'}">
+  <h3>Step 3 — Physical Code Verification</h3>
+  <ol>
+    <li>Meet at the arranged location</li>
+    <li>Show YOUR code (below) to <span th:text="${otherUsername}"></span> — they read it from your screen</li>
+    <li>Read <span th:text="${otherUsername}"></span>'s code from their screen and type it below</li>
+  </ol>
+
+  <h4>Verification Status</h4>
+  <p>
+    <span th:text="${ledger.buyerUsername}"></span>: <b th:text="${ledger.buyerVerified} ? 'Verified' : 'Waiting'"></b>
+    &nbsp;|&nbsp;
+    <span th:text="${ledger.sellerUsername}"></span>: <b th:text="${ledger.sellerVerified} ? 'Verified' : 'Waiting'"></b>
+  </p>
+
+  <h4>Your Code — Show This to <span th:text="${otherUsername}"></span></h4>
+  <p><b>(<span th:text="${isBuyer} ? 'Buyer Code' : 'Seller Code'"></span>)</b></p>
+  <p class="verification-code"><b th:text="${myDisplayCode}"></b></p>
+  <p><i>Show this screen in person — do not share digitally</i></p>
+
+  <div th:unless="${myVerified}">
+    <h4>Enter <span th:text="${otherUsername}"></span>'s Code</h4>
+    <p>Look at <b th:text="${otherUsername}"></b>'s screen and type the 8-character code you see there.</p>
+    <form method="post" th:action="@{/handover/verify/{id}(id=${ledger.ledgerId})}"><input type="hidden" name="_csrf" th:value="${csrf}">
+      <p>
+        <label>
+          <span th:text="${isBuyer} ? 'Seller\'s Code (from their screen)' : 'Buyer\'s Code (from their screen)'"></span>:<br>
+          <input type="text" name="submittedCode" required maxlength="8"
+                 placeholder="e.g. A3F9B2C1"
+                 style="font-family:monospace;font-size:1.5em;letter-spacing:0.2em;text-transform:uppercase;">
+        </label>
+      </p>
+      <p><button type="submit" data-pending="Verifying…">Submit Code</button></p>
+    </form>
+  </div>
+
+  <div th:if="${myVerified and !otherVerified}">
+    <p><b>Your code was accepted.</b> Waiting for <span th:text="${otherUsername}"></span> to verify. An update notice appears when the other person verifies.</p>
+  </div>
+
+  <p><a th:href="@{/dispute/file/{id}(id=${ledger.ledgerId})}">Something wrong? File a dispute</a></p>
+</div>
+
+</section>
+<!-- COMPLETED -->
+<div th:if="${ledger.transactionState == 'COMPLETED'}">
+  <h3>Transaction Complete</h3>
+  <p>Both parties verified the physical handover. This transaction is closed.</p>
+</div>
+
+<!-- DISPUTED -->
+<div th:if="${ledger.transactionState == 'DISPUTED'}">
+  <h3>Transaction Disputed</h3>
+  <p th:if="${dispute != null and dispute.status == 'RESOLVED'}">Resolved by an administrator. The listing has been withdrawn. <span th:text="${dispute.adminNotes}"></span></p><p th:unless="${dispute != null and dispute.status == 'RESOLVED'}">This transaction is under admin review. Check <a th:href="@{/dispute/my-disputes}">My Disputes</a> for updates.</p>
+</div>
+
+<!-- CANCELLED -->
+<div th:if="${ledger.transactionState == 'CANCELLED'}">
+  <h3>Reservation Cancelled</h3>
+  <p>This reservation was cancelled. The listing has been returned to the marketplace.</p>
+</div>
+
+<!-- SSE: real-time status updates -->
+
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

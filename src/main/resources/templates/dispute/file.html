@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>File Dispute — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="form-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content">
+<div class="section-line"><span>THE RESOLUTION DESK</span><span>CAMPUS EXCHANGE / PERSONAL EDITION</span></div><div class="form-layout"><aside class="form-editorial" aria-hidden="true"><span class="eyebrow">A NOTE FROM THE DESK</span><p>Every good<br>exchange starts<br><em>with a few words.</em></p><span class="editorial-number">CE.</span></aside><section class="form-sheet">
+
+<p><a th:href="@{/handover/transactions}">← Transactions</a></p>
+<h2>File a Dispute</h2>
+
+<div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
+
+<h3>What happens when you file a dispute</h3>
+<ol>
+  <li><b>Transaction is paused</b> — locked and marked DISPUTED immediately.</li>
+  <li><b>Admin is notified</b> — a platform admin will review the dispute and your reason.</li>
+  <li><b>Track in My Disputes</b> — monitor the status and see admin notes in <a th:href="@{/dispute/my-disputes}">My Disputes</a>.</li>
+</ol>
+<p>Common reasons: seller no-show, item mismatch, token verification failure, item condition different from listing.</p>
+
+<hr>
+
+<form method="post" th:action="@{/dispute/file/{id}(id=${ledgerId})}"
+      data-confirm="Submit this dispute? The transaction will be locked and flagged for admin review."><input type="hidden" name="_csrf" th:value="${csrf}">
+  <p>
+    <label>Describe what went wrong *:<br>
+    <textarea name="reason" maxlength="5000" th:text="${reason}" rows="6" cols="60" required
+              placeholder="e.g. Seller did not show up to the arranged meetup at the library on June 5."></textarea>
+    </label>
+  </p>
+  <p>Be specific — include location, time, and what actually happened vs. what was agreed.</p>
+  <p>
+    <button type="submit">Submit Dispute</button>
+    <a th:href="@{/handover/transactions}">Cancel</a>
+  </p>
+</form>
+</section></div></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

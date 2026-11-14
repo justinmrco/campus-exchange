@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Admin Dashboard — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="admin-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content"><div class="section-line"><span>THE ADMINISTRATION DESK</span><span>REVIEW / RESOLVE / KEEP RECORD</span></div>
+
+<nav class="admin-nav" aria-label="Administration"><a th:href="@{/admin/dashboard}">Overview</a><a th:href="@{/admin/users}">Users</a><a th:href="@{/admin/listings}">Listings</a><a th:href="@{/admin/transactions}">Transactions</a><a th:href="@{/admin/disputes}">Disputes</a></nav><h1>Dashboard</h1>
+
+<div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
+
+<div class="desk-statistics" aria-label="Marketplace overview"><section><span>COMMUNITY MEMBERS</span><strong th:text="${userCount}"></strong><a th:href="@{/admin/users}">Manage accounts ↗</a></section><section><span>POSTED NOTICES</span><strong th:text="${listingCount}"></strong><a th:href="@{/admin/listings}">Read the classifieds ↗</a></section><section><span>EXCHANGES STARTED</span><strong th:text="${allTransactions}"></strong><a th:href="@{/admin/transactions}">Open the register ↗</a></section><section><span>OPEN DISPUTES</span><strong th:text="${openDisputes}"></strong><a th:href="@{/admin/disputes}">Visit the resolution desk ↗</a></section></div>
+
+<p>
+  <a th:href="@{/admin/users}">Manage Users</a> |
+  <a th:href="@{/admin/listings}">View Listings</a> |
+  <a th:href="@{/admin/transactions}">View Transactions</a> |
+  <a th:href="@{/admin/disputes}">Review Disputes</a>
+</p>
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Resolve Dispute — Admin</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="admin-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content"><div class="section-line"><span>THE ADMINISTRATION DESK</span><span>REVIEW / RESOLVE / KEEP RECORD</span></div>
+
+<p><a th:href="@{/admin/disputes}">← Disputes</a></p>
+<nav class="admin-nav" aria-label="Administration"><a th:href="@{/admin/dashboard}">Overview</a><a th:href="@{/admin/users}">Users</a><a th:href="@{/admin/listings}">Listings</a><a th:href="@{/admin/transactions}">Transactions</a><a th:href="@{/admin/disputes}">Disputes</a></nav><h1>Dispute #<span th:text="${dispute.disputeId}"></span> — <span th:text="${dispute.status == 'MEETUP_ARRANGED' ? 'Meetup confirmed' : #strings.capitalizeWords(#strings.toLowerCase(#strings.replace(dispute.status, '_', ' ')))}"></span></h1>
+
+<div th:if="${message}"><b th:text="${message}"></b></div>
+<div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
+
+<p>
+  Item: <b th:text="${dispute.listingTitle}"></b><br>
+  Reporter: <b th:text="${dispute.reporterUsername}"></b><br>
+  Filed: <span th:text="${#temporals.format(dispute.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+  <span th:if="${dispute.resolvedAt != null}">
+    &nbsp;| Resolved: <span th:text="${#temporals.format(dispute.resolvedAt, 'yyyy-MM-dd HH:mm')}"></span>
+  </span>
+</p>
+
+<h3>Dispute Reason</h3>
+<p th:text="${dispute.reason}"></p>
+
+<div th:if="${dispute.adminNotes != null}">
+  <h3>Resolution</h3>
+  <p th:text="${dispute.adminNotes}"></p>
+</div>
+
+<div th:if="${dispute.status == 'OPEN'}">
+  <hr>
+  <h3>Resolve this dispute</h3>
+  <form method="post" th:action="@{/admin/disputes/{id}/resolve(id=${dispute.disputeId})}"><input type="hidden" name="_csrf" th:value="${csrf}">
+    <p>
+      <label>Resolution Notes *:<br>
+      <textarea name="adminNotes" maxlength="5000" th:text="${adminNotes}" rows="5" cols="60" required
+                placeholder="Who is at fault, what action was taken, outcome…"></textarea>
+      </label>
+    </p>
+    <p><button type="submit">Mark as resolved</button></p>
+  </form>
+</div>
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

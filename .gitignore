@@ -1,0 +1,36 @@
+# Maven and IDE output
+/target/
+/build/
+/out/
+/.idea/
+/.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+
+# Local credentials and logs
+/config/application-local.properties
+.env
+*.log
+
+# Generated local demo logins and recovery manifest
+/config/demo-accounts.properties
+/config/demo-accounts-*.tmp
+/config/demo-accounts.properties.lock
+
+# Member-uploaded images (persist locally, never commit)
+/uploads/
+
+# Owner-supplied full-resolution originals; optimized demo copies are bundled
+/productimage/
+
+# Local environment variants and research drafts
+.env.*
+!.env.example
+/config/application-*.properties
+!/config/application-*.properties.example
+/PRODUCT_IMAGE_RESEARCH_PROMPT.md
+/campusexchange-product-photo-links.md

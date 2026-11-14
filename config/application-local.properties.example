@@ -1,0 +1,7 @@
+# Copy to application-local.properties, which is ignored. Never commit real credentials.
+spring.datasource.url=jdbc:mysql://localhost:3306/campusexchange?serverTimezone=Asia/Shanghai
+spring.datasource.username=campusexchange
+spring.datasource.password=
+
+# Optional persistent photo directory (default: uploads/listings)
+# app.upload-directory=uploads/listings

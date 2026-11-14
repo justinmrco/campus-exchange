@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Browse — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="editorial-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header}"></header>
+<main id="content" class="marketplace" data-live="marketplace" th:attr="data-revision=${eventRevision}">
+<div class="section-line"><span>01 / THE CLASSIFIEDS</span><span>FIND SOMETHING WORTH PASSING ON</span></div>
+<div class="front-page-heading"><h1>One person's last term.<br><em>Your next chapter.</em></h1><p>Textbooks with another story.<br>A desk for your next big idea.<br>Find it here. Exchange it on campus.</p></div>
+<div class="message" role="status" th:if="${message}" th:text="${message}"></div><div role="alert" th:if="${error}" th:text="${error}"></div>
+<form class="search-desk" method="get" th:action="@{/marketplace}"><label>Find your next thing<input type="search" name="keyword" th:value="${keyword}" placeholder="A textbook, a bicycle, a fresh start…" maxlength="200"></label><label>Department<select name="category"><option value="">All categories</option><option value="Textbooks" th:selected="${category == 'Textbooks'}">Textbooks</option><option value="Electronics" th:selected="${category == 'Electronics'}">Electronics</option><option value="Furniture" th:selected="${category == 'Furniture'}">Furniture</option><option value="Clothing" th:selected="${category == 'Clothing'}">Clothing</option><option value="Stationery" th:selected="${category == 'Stationery'}">Stationery</option><option value="Bicycles" th:selected="${category == 'Bicycles'}">Bicycles</option><option value="Other" th:selected="${category == 'Other'}">Other</option></select></label><button type="submit">Search the classifieds <span aria-hidden="true">↗</span></button><a th:href="@{/marketplace}">Clear</a></form>
+<div class="classified-heading"><h2>Campus finds</h2><span>DIRECT FROM YOUR COMMUNITY</span></div>
+<section class="empty-notice" th:if="${#lists.isEmpty(listings)}"><span class="eyebrow">SPACE FOR SOMETHING GOOD</span><h3 th:text="${keyword != null and !keyword.isEmpty() or category != null and !category.isEmpty() ? 'Nothing in this edition. Yet.' : 'The next story starts with you.'}"></h3><p>Try a different search, or give something you own a second chapter.</p><a class="text-link" th:href="@{/listing/create}">Post an item ↗</a></section>
+<section class="classified-grid" aria-label="Available listings" th:unless="${#lists.isEmpty(listings)}">
+<article class="classified" th:each="listing : ${listings}" th:attr="data-listing-id=${listing.listingId},data-category=${listing.category}">
+<div class="ad-meta"><span th:text="${listing.category}"></span><span th:text="${'No. ' + listing.listingId}"></span></div>
+<figure class="product-photo"><img th:if="${listing.imageUrl != null}" th:src="@{${listing.imageUrl}}" th:alt="${listing.title}" width="800" height="600" loading="lazy" decoding="async"><div class="no-photo" th:hidden="${listing.imageUrl != null}"><span aria-hidden="true">CE.</span><span>No photo provided</span></div></figure><h3><a th:href="@{/listing/{id}(id=${listing.listingId})}" th:text="${listing.title}"></a></h3>
+<p class="ad-description" th:text="${#strings.isEmpty(listing.description) ? 'A campus find looking for its next owner. Open the notice for details.' : listing.description}"></p>
+<div class="ad-price">¥<span th:text="${listing.price}"></span><small>ASKING PRICE</small></div>
+<div class="ad-byline"><span>Listed by <b th:text="${listing.sellerUsername}"></b></span><time th:text="${#temporals.format(listing.createdAt, 'dd MMM yyyy')}"></time></div>
+<a class="ad-open" th:href="@{/listing/{id}(id=${listing.listingId})}" th:attr="aria-label=${'Read notice: ' + listing.title}">Read the notice <span aria-hidden="true">↗</span></a>
+</article></section><nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main>
+<footer th:replace="~{fragments/navigation :: footer}"></footer></body></html>

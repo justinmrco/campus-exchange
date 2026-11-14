@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Login — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="account-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content">
+<div class="section-line"><span>WELCOME BACK</span><span>CAMPUS EXCHANGE / PERSONAL EDITION</span></div><div class="form-layout"><aside class="form-editorial" aria-hidden="true"><span class="eyebrow">A NOTE FROM THE DESK</span><p>Good things.<br>New people.<br><em>Next chapters.</em></p><span class="editorial-number">CE.</span></aside><section class="form-sheet">
+
+<div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
+<div th:if="${param.message}">You have been signed out.</div>
+<h2>Sign In</h2>
+<form method="post" th:action="@{/login}"><input type="hidden" name="_csrf" th:value="${csrf}">
+  <p>
+    <label>Username:<br>
+    <input type="text" name="username" th:value="${username}" required autofocus></label>
+  </p>
+  <p>
+    <label>Password:<br>
+    <input type="password" name="password" required></label>
+  </p>
+  <p><button type="submit">Sign In</button></p>
+</form>
+
+<p>No account? <a th:href="@{/register}">Register here</a></p>
+</section></div></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

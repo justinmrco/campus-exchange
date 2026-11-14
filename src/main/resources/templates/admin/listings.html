@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Listings — Admin</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="admin-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content"><div class="section-line"><span>THE ADMINISTRATION DESK</span><span>REVIEW / RESOLVE / KEEP RECORD</span></div>
+
+<nav class="admin-nav" aria-label="Administration"><a th:href="@{/admin/dashboard}">Overview</a><a th:href="@{/admin/users}">Users</a><a th:href="@{/admin/listings}">Listings</a><a th:href="@{/admin/transactions}">Transactions</a><a th:href="@{/admin/disputes}">Disputes</a></nav><h1>All Listings</h1>
+
+<div class="table-scroll" tabindex="0" aria-label="Scrollable records"><table >
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Seller</th>
+      <th>Category</th>
+      <th>Price</th>
+      <th>Status</th>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tr th:each="listing : ${listings}">
+    <td th:text="${listing.listingId}"></td>
+    <td><a th:href="@{/listing/{id}(id=${listing.listingId})}" th:text="${listing.title}"></a></td>
+    <td th:text="${listing.sellerUsername}"></td>
+    <td th:text="${listing.category}"></td>
+    <td>¥<span th:text="${listing.price}"></span></td>
+    <td><span class="status-stamp" th:attr="data-status=${listing.status}" th:text="${listing.status == 'MEETUP_ARRANGED' ? 'Meetup confirmed' : #strings.capitalizeWords(#strings.toLowerCase(#strings.replace(listing.status, '_', ' ')))}"></span></td>
+    <td th:text="${#temporals.format(listing.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+  </tr>
+  </tbody>
+</table></div>
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

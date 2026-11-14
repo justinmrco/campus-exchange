@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>Sell an Item — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="form-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content">
+<div class="section-line"><span>WRITE A NEW NOTICE</span><span>CAMPUS EXCHANGE / PERSONAL EDITION</span></div><div class="form-layout"><aside class="form-editorial" aria-hidden="true"><span class="eyebrow">A NOTE FROM THE DESK</span><p>Every good<br>exchange starts<br><em>with a few words.</em></p><span class="editorial-number">CE.</span></aside><section class="form-sheet">
+
+<p><a th:href="@{/my-listings}">← My Listings</a></p>
+<h2>Sell an Item</h2>
+
+<div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
+
+<form enctype="multipart/form-data" method="post" th:action="@{/listing/create}"><input type="hidden" name="_csrf" th:value="${csrf}"><input type="hidden" name="formToken" th:value="${formToken}">
+  <p>
+    <label>Item Title *:<br>
+    <input type="text" name="title" th:value="${draft != null ? draft.title : ''}" required maxlength="100" size="50"></label>
+  </p>
+  <p>
+    <label>Description:<br>
+    <textarea name="description" th:text="${draft != null ? draft.description : ''}" maxlength="5000" rows="4" cols="50" placeholder="Condition, defects, reason for selling…"></textarea></label>
+  </p>
+  <p>
+    <label>Price (¥) *:<br>
+    <input type="number" name="price" th:value="${draft != null ? draft.price : ''}" required min="0.01" max="999999" step="0.01"></label>
+  </p>
+  <p>
+    <label>Category:<br>
+    <select name="category">
+      <option value="Textbooks"   th:selected="${draft != null and draft.category == 'Textbooks'}">Textbooks</option>
+      <option value="Electronics" th:selected="${draft != null and draft.category == 'Electronics'}">Electronics</option>
+      <option value="Furniture"   th:selected="${draft != null and draft.category == 'Furniture'}">Furniture</option>
+      <option value="Clothing"    th:selected="${draft != null and draft.category == 'Clothing'}">Clothing</option>
+      <option value="Stationery"  th:selected="${draft != null and draft.category == 'Stationery'}">Stationery</option>
+      <option value="Bicycles"    th:selected="${draft != null and draft.category == 'Bicycles'}">Bicycles</option>
+      <option value="Other"       th:selected="${draft != null and draft.category == 'Other'}">Other</option>
+    </select></label>
+  </p>
+  <div class="photo-field">
+    <label for="photo">Product photo (optional)</label>
+    <input id="photo" type="file" name="photo" accept="image/jpeg,image/png" aria-describedby="photo-help">
+    <p id="photo-help" class="muted">JPEG or PNG, up to 5 MB. Choose an honest photo of your item. If validation fails, reselect your file.</p>
+
+  </div>
+
+  <p>
+    <button type="submit">Create listing</button>
+    <a th:href="@{/my-listings}">Cancel</a>
+  </p>
+</form>
+</section></div></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>

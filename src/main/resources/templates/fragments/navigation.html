@@ -1,0 +1,13 @@
+<!doctype html><html xmlns:th="http://www.thymeleaf.org"><body>
+<header th:fragment="header" class="site-header" th:classappend="${compactHeader == true} ? 'compact-header' : ''">
+ <div class="edition-line"><span>THE CAMPUS CLASSIFIEDS</span><span>SECOND-HAND GOODS. FIRST-HAND CONNECTIONS.</span></div>
+ <a class="wordmark" th:href="@{/marketplace}" aria-label="CampusExchange home">Campus<span>Exchange</span><i aria-hidden="true">.</i></a>
+ <div class="masthead-deck"><span>A new chapter for the things you own.</span><span>Buy. Meet. Pass it on.</span></div>
+ <nav aria-label="Main navigation" class="main-nav">
+  <th:block th:if="${loginUser != null}"><a th:href="@{/marketplace}">Classifieds</a><a class="post-link" th:href="@{/listing/create}">Post an item <span aria-hidden="true">↗</span></a><a th:href="@{/my-listings}">My listings</a><a th:href="@{/handover/transactions}">Exchanges</a><a th:href="@{/dispute/my-disputes}">Disputes</a><a th:if="${loginUser.admin}" th:href="@{/admin/dashboard}">Admin desk</a>
+  <span class="account-caption">For <strong th:text="${loginUser.username}"></strong></span><form method="post" th:action="@{/logout}"><input type="hidden" name="_csrf" th:value="${csrf}"><button class="quiet" type="submit">Sign out</button></form></th:block>
+  <th:block th:unless="${loginUser != null}"><span class="nav-note">Your campus. Your next great find.</span><a th:href="@{/login}">Sign in</a><a th:href="@{/register}">Join the exchange ↗</a></th:block>
+ </nav>
+</header>
+<footer th:fragment="footer" class="site-footer"><a class="footer-brand" th:href="@{/marketplace}">CampusExchange.</a><span>Good things deserve another term.</span><small>Community marketplace demo · Membership unverified</small></footer>
+</body></html>

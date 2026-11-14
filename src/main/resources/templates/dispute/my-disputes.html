@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" th:href="@{/css/site.css}">
+  <title>My Disputes — CampusExchange</title>
+<script defer th:src="@{/js/site.js}"></script>
+</head>
+<body class="records-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
+<main id="content" data-live="user" th:attr="data-revision=${eventRevision}"><div class="section-line"><span>THE EXCHANGE REGISTER</span><span>YOUR COMMUNITY / YOUR RECORDS</span></div>
+
+<h1>My Disputes</h1><div role="alert" th:if="${error}" th:text="${error}"></div>
+<div th:if="${message}"><b th:text="${message}"></b></div>
+
+<p th:if="${#lists.isEmpty(disputes)}">No disputes filed. <a th:href="@{/handover/transactions}">View your transactions</a></p>
+
+<div class="table-scroll member-records" tabindex="0" aria-label="Scrollable records"><table role="table" th:unless="${#lists.isEmpty(disputes)}" >
+  <thead role="rowgroup">
+    <tr role="row">
+      <th role="columnheader" scope="col">#</th>
+      <th role="columnheader" scope="col">Item</th>
+      <th role="columnheader" scope="col">Reason</th>
+      <th role="columnheader" scope="col">Status</th>
+      <th role="columnheader" scope="col">Filed</th>
+      <th role="columnheader" scope="col">Admin Notes</th>
+    </tr>
+  </thead>
+  <tbody role="rowgroup">
+  <tr role="row" th:each="d : ${disputes}">
+    <td role="cell" data-label="Reference" th:text="${d.disputeId}"></td>
+    <td role="cell" data-label="Item" th:text="${d.listingTitle}"></td>
+    <td role="cell" data-label="Reason" th:text="${#strings.abbreviate(d.reason, 55)}"></td>
+    <td role="cell" data-label="Status"><span class="status-stamp" th:attr="data-status=${d.status}" th:text="${d.status == 'MEETUP_ARRANGED' ? 'Meetup confirmed' : #strings.capitalizeWords(#strings.toLowerCase(#strings.replace(d.status, '_', ' ')))}"></span></td>
+    <td role="cell" data-label="Filed" th:text="${#temporals.format(d.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+    <td role="cell" data-label="Admin notes" th:text="${d.adminNotes != null ? d.adminNotes : '—'}"></td>
+  </tr>
+  </tbody>
+</table></div>
+
+
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+</html>
