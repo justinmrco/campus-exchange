@@ -9,15 +9,33 @@ The interface follows a contemporary campus newspaper: a bold masthead, editoria
 ![CampusExchange newspaper-style marketplace](webscreenshots/1.png)
 
 <details>
-<summary>Browse the classifieds and posting interface</summary>
+<summary>Explore the item, exchange and administrator flows</summary>
+
+### Classifieds and listing details
 
 ![Product classifieds with local photos and category accents](webscreenshots/3.png)
 
-![Create a listing with the shared editorial layout](webscreenshots/6.png)
+![Compact item detail with description, price and reservation action](webscreenshots/7.png)
+
+### Meetup and reciprocal handover
+
+![Review and accept the other participant's meetup proposal](webscreenshots/9.jpeg)
+
+![In-person verification using reciprocal handover codes](webscreenshots/10.jpeg)
+
+![Completed exchange receipt](webscreenshots/13.jpeg)
+
+![Member exchange register](webscreenshots/14.jpeg)
+
+### Administration and disputes
+
+![Administrator overview](webscreenshots/15.jpeg)
+
+![Dispute review with a resolution form](webscreenshots/17.jpeg)
 
 </details>
 
-These screenshots show the local academic demo with fictional listings and representative product photography. They demonstrate appearance, not a live hosted service.
+Screenshots show a local academic demo with fictional listings and representative photography. Demo handover codes are illustrative, not login credentials. Some captures precede the latest spacing refinements. Resolution notes are manually entered text; the application does not issue compensation, refunds or payments. These are screenshots, not a live hosted service. Mobile screenshot coverage was intentionally deferred.
 
 ## What it does
 
@@ -145,7 +163,7 @@ To replace the demo catalog, prepare 43 distinct representative JPEGs locally an
 
 Keep the full newspaper masthead on classifieds and the compact version on task pages. Category ink accents and alternating paper rows must preserve aligned listing modules. Essential metadata stays readable; item details show only actual listing facts, without inferred condition or accessories.
 
-Member exchange/dispute tables become labelled summaries on narrow screens; administrator records retain tables. Progress distinguishes current, completed and upcoming stages; disputes interrupt the timeline. Primary actions use filled buttons, while cancellation stays secondary.
+Member exchange/dispute tables become labelled summaries on narrow screens; administrator records retain tables. The exchange register uses a bounded desktop scroll region with sticky headings and visible pagination. Individual handovers place the summary/progress beside the current action, with expandable proposal editors and preserved validation drafts. Smaller screens retain natural page scrolling. Progress distinguishes current, completed and upcoming stages; disputes interrupt the timeline. Primary actions use filled buttons, while cancellation stays secondary.
 
 Navigation transitions are 320ms; the larger first-visit paper entrance remains separate. Respect reduced-motion preferences. Live updates show a persistent notice and refresh only on request. POST buttons show pending text and recover after history navigation.
 

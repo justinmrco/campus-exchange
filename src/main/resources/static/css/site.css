@@ -42,3 +42,154 @@ form{max-width:720px}form p{margin:22px 0}label{font-size:12px;font-weight:600}i
 @media(prefers-reduced-motion:reduce){.classified:hover .product-photo img,.classified:focus-within .product-photo img{transform:none}}
 
 .product-photo [hidden]{display:none}
+
+/* Compact detail spread; other newspaper pages retain their existing layout. */
+.item-detail-main{padding-top:18px;padding-bottom:24px;min-height:0;width:100%}
+.item-detail-main .section-line{margin-bottom:18px;padding-bottom:10px}
+.item-spread{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;border-block:1px solid var(--ink);padding-block:20px}
+.item-portrait{margin:0;aspect-ratio:auto;background:var(--sheet);min-width:0;min-height:0;display:grid;align-items:center}
+.item-portrait img{width:100%;height:100%;max-height:520px;object-fit:contain}
+.item-portrait .no-photo{min-height:240px}
+.item-copy{min-width:0;display:flex;flex-direction:column}
+.item-kicker{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.item-kicker p{margin:0}
+.item-copy h1{font-size:clamp(30px,3.2vw,46px);line-height:1.06;margin:14px 0 12px;letter-spacing:-.045em}
+.item-byline{font-size:12px;color:var(--muted);margin:0 0 16px}
+.item-description{border-top:1px solid var(--line);padding:14px 8px 16px 0;min-height:0;overflow-wrap:anywhere}
+.item-description h2{margin:0 0 10px;font-weight:400}
+.item-description p{font:17px/1.65 var(--headline);white-space:pre-line;margin:0}
+.item-description:focus-visible{outline-offset:2px}
+.item-purchase{border-top:1px solid var(--line);padding-top:14px;margin-top:auto}
+.item-price{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.item-price .notice-price{font:700 clamp(30px,3vw,42px)/1.1 var(--headline);letter-spacing:-.04em;margin:0;color:var(--green)}
+.item-purchase>p{font-size:12px;color:var(--muted);margin:10px 0}
+.item-purchase form{max-width:none;margin:0}
+.item-purchase button,.item-purchase .button-link{display:flex;width:100%;justify-content:space-between;align-items:center;gap:16px}
+.item-purchase small{display:block;font-size:11px;color:var(--muted);margin-top:8px}
+.item-colophon{max-width:1320px;width:100%;margin:0 auto;padding:0 40px 16px;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--muted)}
+.item-colophon>a{font:700 18px var(--headline);text-decoration:none;color:var(--ink)}
+.item-colophon>span,.item-colophon small{font:10px/1.5 var(--mono)}
+@media(min-width:1024px) and (min-height:768px){
+.item-detail-page{min-height:100svh;display:flex;flex-direction:column}
+.item-detail-main{flex:1;display:flex;flex-direction:column}
+.item-spread{flex:1;min-height:470px;height:calc(100svh - 250px)}
+.item-portrait img{max-height:none;min-height:0;position:absolute;inset:0}
+.item-copy{display:grid;grid-template-rows:auto minmax(80px,1fr) auto;min-height:0}
+.item-description{overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.item-purchase{margin-top:0}
+}
+@media(max-width:1023px),(max-height:767px){.item-spread{gap:26px}.item-portrait{align-self:start}.item-portrait img{height:auto}.item-description{padding-bottom:20px}}
+@media(max-width:699px){.item-detail-main{padding:18px 20px 24px}.item-spread{grid-template-columns:1fr;gap:24px;padding-block:16px}.item-portrait img{max-height:340px}.item-copy h1{font-size:34px}.item-colophon{padding:0 20px 20px;flex-wrap:wrap}.item-colophon small{width:100%}}
+
+/* Shared confirmation slip; native dialog supplies modality and Escape handling. */
+.paper-dialog{width:min(480px,calc(100vw - 32px));max-height:calc(100svh - 40px);overflow-y:auto;padding:28px;border:1px solid var(--line);border-top:4px double var(--ink);background:var(--sheet);color:var(--ink);box-shadow:8px 10px 0 #252c2420;animation:slip-arrive 180ms ease-out}
+.paper-dialog::backdrop{background:#18231dcc;backdrop-filter:blur(3px)}
+.paper-dialog-edition{font:10px/1.5 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.paper-dialog h2{font:700 clamp(30px,5vw,40px)/1.08 var(--headline);letter-spacing:-.04em;margin:22px 0 18px}
+.paper-dialog-summary{margin:0 0 18px;border-block:1px solid var(--line);padding:12px 0}
+.paper-dialog-summary>div{display:grid;grid-template-columns:90px minmax(0,1fr);gap:14px;padding:5px 0}
+.paper-dialog-summary dt{font:10px/1.6 var(--mono);text-transform:uppercase;color:var(--muted)}
+.paper-dialog-summary dd{font-size:14px;margin:0;overflow-wrap:anywhere}
+.paper-dialog-summary>div:last-child dd{font-weight:700;color:var(--green)}
+.paper-dialog>p{font-size:13px;line-height:1.7;color:var(--muted)}
+.paper-dialog-actions{display:flex;justify-content:space-between;align-items:stretch;gap:12px;margin-top:24px}
+.paper-dialog-actions button{flex:1;padding:12px;font-size:12px}
+.paper-dialog[data-tone=destructive] [data-slip-confirm]{background:var(--rust);border-color:var(--rust)}
+.paper-dialog-foot{border-top:1px dashed var(--line);padding-top:14px;margin-top:24px;font:9px/1.5 var(--mono);letter-spacing:.1em;color:var(--muted);text-align:center}
+@keyframes slip-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:399px){.paper-dialog{padding:22px}.paper-dialog-actions{flex-direction:column}.paper-dialog-summary>div{grid-template-columns:70px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.paper-dialog{animation:none}}
+
+/* Compact exchange register and two-column handover receipt. */
+.exchange-register-page main,.exchange-detail-page main{width:100%;min-height:0;padding:18px 40px 24px}
+.exchange-register-page .section-line,.exchange-detail-page .section-line{margin-bottom:18px}
+.exchange-register-heading{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:18px}
+.exchange-register-heading h1{font-size:38px;margin:0}
+.exchange-register-heading p{font-size:12px;color:var(--muted);margin:0}
+.exchange-register-page .member-records{margin:0;scrollbar-width:thin}
+.exchange-register-page th,.exchange-register-page td{padding:12px;font-size:12px}
+.exchange-register-page td:nth-child(2){font:600 20px/1.2 var(--headline)}
+.exchange-register-page thead th{position:sticky;top:0;background:var(--sheet);z-index:1}
+.exchange-register-page .pagination{margin:14px 0 0;padding-top:12px}
+.exchange-detail-page main{margin:0 auto;border:0;box-shadow:none;background:transparent}
+.exchange-detail-page main:after{display:none}
+.exchange-workspace{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:36px;border-block:1px solid var(--ink);padding-block:20px}
+.exchange-summary,.exchange-action-panel{min-width:0}
+.exchange-summary>h1{font-size:clamp(30px,3.2vw,44px);margin:12px 0 18px}
+.exchange-summary>.eyebrow{margin:0}
+.exchange-summary .receipt-status{text-align:left;margin:0 0 18px}
+.exchange-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;border-block:1px solid var(--line);padding:14px 0;margin:0}
+.exchange-facts>div:last-child{grid-column:1/-1}
+.exchange-facts dt{font:10px/1.5 var(--mono);text-transform:uppercase;color:var(--muted)}
+.exchange-facts dd{font-size:13px;margin:4px 0 0;overflow-wrap:anywhere}
+.exchange-meetup h2{margin:16px 0 6px}.exchange-meetup p{margin:4px 0;font-size:14px}.exchange-meetup small{font-size:11px;color:var(--muted)}
+.exchange-summary .muted{font-size:11px;margin:12px 0}
+.exchange-summary .timeline{grid-template-columns:1fr;gap:0;margin:16px 0 0}
+.exchange-summary .timeline li{position:relative;border-top:0;border-left:2px solid var(--line);margin-left:10px;padding:5px 10px 10px 24px;font-size:12px}
+.exchange-summary .timeline li:before{position:absolute;left:-11px;top:7px;background:var(--paper);padding:0 3px;margin:0;font-size:10px}
+.exchange-summary .timeline b{display:inline;font-size:12px}
+.exchange-summary .timeline .is-current{background:transparent;border-left-color:var(--rust)}
+.exchange-summary .timeline .is-complete{border-left-color:var(--green)}
+.exchange-action-panel{border-left:1px solid var(--line);padding-left:32px}
+.exchange-action-panel h2{font-size:clamp(27px,2.8vw,36px);margin:8px 0 14px}
+.exchange-action-panel p{font-size:13px;margin:10px 0;overflow-wrap:anywhere}
+.exchange-action-panel .eyebrow{font-size:10px}
+.exchange-action-panel .receipt-actions{max-width:none}
+.exchange-action-panel .receipt-actions form{padding:0}
+.exchange-action-panel .receipt-actions input{min-width:0;width:100%;margin-top:6px}
+.exchange-action-panel .meetup-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.exchange-action-panel .meetup-form p{margin:0}
+.exchange-action-panel .meetup-submit{grid-column:1/-1}
+.exchange-action-panel form p:last-child{margin-bottom:0}
+.exchange-action-panel .proposal-editor{border-block:1px solid var(--line);padding:12px 0;margin:18px 0}
+.proposal-editor summary{font-size:13px;font-weight:600;cursor:pointer;color:var(--green);min-height:32px;align-content:center}
+.exchange-action-panel .exchange-cancel{margin-top:18px;padding-top:12px!important;border-top:1px solid var(--line)}
+.exchange-cancel button{font-size:11px;min-height:44px;padding:8px 12px}
+.verification-pair{display:flex;gap:12px 24px;flex-wrap:wrap;border-block:1px solid var(--line);padding:10px 0;font-size:12px}
+.exchange-detail-page main .verification-code{font:700 clamp(26px,3vw,38px)/1.2 var(--mono);margin:8px 0 14px;padding:14px 8px;letter-spacing:.12em}
+.exchange-action-panel .verify-form{display:flex;align-items:end;gap:12px;margin:12px 0}
+.exchange-action-panel .verify-form p{flex:1;margin:0}
+.exchange-action-panel .verify-form input{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em}
+.exchange-action-panel .resolution{white-space:pre-line}
+@media(min-width:1024px) and (min-height:768px){
+.exchange-register-page,.exchange-detail-page{min-height:100svh;display:flex;flex-direction:column}
+.exchange-register-page main,.exchange-detail-page main{flex:1;display:flex;flex-direction:column}
+.exchange-register-page .member-records{max-height:calc(100svh - 335px);overflow:auto}
+.exchange-workspace{height:calc(100svh - 250px);min-height:480px;flex:1}
+.exchange-action-panel{overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;padding-right:8px}
+}
+@media(max-width:1023px),(max-height:767px){.exchange-workspace{gap:24px}.exchange-action-panel{padding-left:24px}}
+@media(max-width:699px){
+.exchange-register-page main,.exchange-detail-page main{padding:18px 20px 24px;margin:0 auto}
+.exchange-register-heading{display:block}.exchange-register-heading h1{font-size:32px}.exchange-register-heading p{margin-top:10px}
+.exchange-register-page .member-records{overflow:visible}.exchange-register-page td{padding:12px 0}
+.exchange-register-page td:nth-child(2){font-size:23px}
+.exchange-workspace{grid-template-columns:1fr;gap:24px}
+.exchange-action-panel{border-left:0;border-top:1px solid var(--line);padding:20px 0 0}
+.exchange-action-panel .meetup-form{grid-template-columns:1fr}
+.exchange-action-panel .verify-form{display:block}.exchange-action-panel .verify-form button{margin-top:12px;width:100%}
+}
+
+@media(min-width:1024px) and (min-height:768px){
+.exchange-summary .timeline{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.exchange-summary .timeline li{border-left:0;border-top:2px solid var(--line);margin:0;padding:8px 0 0;min-width:0}
+.exchange-summary .timeline li:before{position:static;display:block;background:transparent;padding:0;margin-bottom:5px}
+.exchange-summary .timeline b{display:block;font-size:11px;overflow-wrap:anywhere}
+.exchange-summary .timeline .is-current{border-top-color:var(--rust)}
+.exchange-summary .timeline .is-complete{border-top-color:var(--green)}
+}
+
+/* Use the wider desktop sheet before adding vertical space. */
+@media(min-width:1200px){
+.exchange-register-page .site-header,.exchange-detail-page .site-header,
+.exchange-register-page main,.exchange-detail-page main,
+.exchange-register-page .item-colophon,.exchange-detail-page .item-colophon{max-width:1680px;padding-inline:clamp(32px,4vw,64px)}
+.exchange-workspace{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+.exchange-facts{grid-template-columns:repeat(3,minmax(0,1fr))}
+.exchange-facts>div:last-child{grid-column:auto}
+.exchange-action-panel form{max-width:none}
+}
+@media(min-width:1440px){
+.exchange-action-panel .meetup-form{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:end}
+.exchange-action-panel .meetup-submit{grid-column:auto}
+}

@@ -1,6 +1,6 @@
 # Release verification
 
-Checked on 14 November 2026 on Windows with JDK 25, targeting Java 23.
+Updated on 15 November 2026 on Windows with JDK 25, targeting Java 23.
 
 ## Passed in the final audit
 
@@ -11,15 +11,17 @@ Checked on 14 November 2026 on Windows with JDK 25, targeting Java 23.
 - Demo seed rollback/retry, username collisions, safe repeat execution, inventory totals, all five demo logins and populated pages.
 - Image content/dimension validation, path restrictions, normalization, replacement/removal, ownership, multipart CSRF, serving and duplicate protection. The populated 43-photo catalog is exercised by the seed checks.
 - JavaScript syntax and runnable motion/interaction checks: first-visit playback, replay prevention, reduced motion, unavailable storage, native transitions, history restoration, pending buttons, persistent update notices and broken-photo fallback.
+- Compact item and exchange layouts preserve participant restrictions, CSRF, proposal versions and original routes. Rejected counter-proposals reopen their editor with escaped draft values; the acceptance suite checks this behavior and unchanged ledger version.
+- Shared receipt-style confirmation checks passed for cancellation, Escape/backdrop dismissal, safe text, focus return, preserved submitter, one-shot approval, duplicate prevention, fallback and unsaved-change refresh.
 - Independent local Git repository initialized on main with the supplied campus-exchange remote. Private configuration, generated credentials, original photos, uploads, build/IDE output and research drafts are ignored.
 
-## Remaining release limitations
+## Evidence and remaining limitations
 
-- **Normal Maven WAR build:** the isolated offline Maven verify attempt failed during test compilation while accessing spring-boot-sql-4.0.6.jar, with Windows access-denied output. Fresh compilation and acceptance execution passed through the JDK compiler API, but this does not verify WAR packaging. Run mvn clean verify in a normal terminal or IntelliJ Maven before publishing a build artifact. The database acceptance main is separate from Maven verify.
+- **Build evidence:** the owner supplied a successful normal clean verify log on 15 November 2026. After the UI refinements, Maven test compilation again encountered Windows dependency-JAR access restrictions here. Fresh main/test compilation through the JDK compiler API and the full acceptance suite passed; WAR packaging passed separately with Maven test compilation skipped. No permanent test-skipping configuration was added. The acceptance main is run separately from Maven verify.
 - **Dependency advisories:** a fresh online advisory scan has not completed; no zero-vulnerability claim is made.
-- **Browser acceptance:** native browser inspection stopped because the current URL could not be verified. HTTP rendering and scripted behavior passed. Six owner-provided desktop screenshots were visually reviewed: marketplace masthead, multiple classifieds rows and the posting form show consistent editorial styling with no obvious overlap in the captured areas. Screenshots do not verify interactive behavior; mobile layout and keyboard interaction still need a manual browser check.
-- **Photo rights:** the 43 owner-supplied photos have unverified original sources, creators and licenses. See src/main/resources/static/images/demo/CREDITS.md. Supplying an image does not itself establish redistribution permission. Resolve rights before a public push that includes these assets.
-- **Remote repository:** network access to GitHub failed in this environment. Remote contents and authentication have not been verified; nothing was pushed.
+- **Browser coverage:** owner-provided desktop screenshots cover classifieds, posting, item detail, proposal/acceptance, reciprocal code verification, completion, exchange history, administrator overview and open/resolved disputes. The captured areas were visually reviewed. Some captures predate the latest width/spacing refinements. Automated native-browser inspection remained unavailable; screenshots do not prove keyboard behavior or all viewport sizes. Mobile screenshots and visual acceptance were intentionally deferred by the owner.
+- **Photo rights:** original sources, creators and licenses for the 43 owner-supplied photographs remain unverified. The owner requested their inclusion as noncommercial demonstration assets. README.md and the photo credits state that this does not establish redistribution permission. No ownership or license claim is made.
+- **Remote repository:** the local repository targets https://github.com/justinmrco/campus-exchange.git. Earlier pushes from this environment failed on connectivity; confirm the final push result separately.
 - **Legacy migrations:** fresh-schema acceptance does not establish compatibility with an arbitrary existing database. Back up and inspect existing tables before running migration scripts.
 
 ## Reproduce

@@ -34,7 +34,7 @@
     <td>
       <form th:if="${!user.admin and user.active}" method="post"
             th:action="@{/admin/users/{id}/deactivate(id=${user.userId})}"
-            data-confirm="Deactivate this account?"
+            data-confirm="Deactivate this account? Sign-in will be blocked and its listings hidden. Existing records will be retained." data-confirm-title="Deactivate this account?" data-confirm-action="Deactivate account" data-confirm-cancel="Keep account active" data-confirm-tone="destructive"
             style="display:inline;"><input type="hidden" name="_csrf" th:value="${csrf}">
         <button type="submit">Deactivate</button>
       </form>

@@ -5,16 +5,16 @@
   <title>My Transactions — CampusExchange</title>
 <script defer th:src="@{/js/site.js}"></script>
 </head>
-<body class="records-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
+<body class="records-page exchange-register-page" th:attr="data-context=@{/}"><a class="skip-link" href="#content">Skip to content</a>
 <header th:replace="~{fragments/navigation :: header(compactHeader=true)}"></header>
 <main id="content" data-live="user" th:attr="data-revision=${eventRevision}"><div class="section-line"><span>THE EXCHANGE REGISTER</span><span>YOUR COMMUNITY / YOUR RECORDS</span></div>
 
-<h1>My Transactions</h1>
+<div class="exchange-register-heading"><h1>Your exchanges.</h1><p>Arrange the meetup. Pass it on. Keep the receipt.</p></div>
 
 <div role="alert" th:if="${error}"><b>Error:</b> <span th:text="${error}"></span></div>
 <p th:if="${#lists.isEmpty(ledgers)}">No transactions yet. <a th:href="@{/marketplace}">Browse the marketplace</a></p>
 
-<div class="table-scroll member-records" tabindex="0" aria-label="Scrollable records"><table role="table" th:unless="${#lists.isEmpty(ledgers)}" >
+<div class="table-scroll member-records" tabindex="0" aria-label="Your exchange records"><table role="table" th:unless="${#lists.isEmpty(ledgers)}" >
   <thead role="rowgroup">
     <tr role="row">
       <th role="columnheader" scope="col">#</th>
@@ -40,5 +40,5 @@
 </table></div>
 
 
-<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer th:replace="~{fragments/navigation :: footer}"></footer></body>
+<nav class="pagination" th:if="${page != null}" aria-label="Pagination"><a th:if="${page > 0}" th:href="@{''(page=${page - 1},keyword=${param.keyword},category=${param.category})}">Previous</a><span th:text="${'Page ' + (page + 1)}"></span><a th:if="${hasNext}" th:href="@{''(page=${page + 1},keyword=${param.keyword},category=${param.category})}">Next</a></nav></main><footer class="item-colophon"><a th:href="@{/marketplace}">CampusExchange.</a><span>On campus &middot; In person</span><small>Community marketplace demo &middot; Membership unverified</small></footer></body>
 </html>
